@@ -11,8 +11,8 @@ def remove(tasks, id):
 def done(tasks, id):
 	tasks[int(id)].status = "done"
 
-def toDo():
-	return
+def toDo(tasks, id):
+	tasks[int(id)].status = "to do"
 
 def quit():
 	return
@@ -71,6 +71,14 @@ class TestTaskManager(unittest.TestCase):
     	tm.cmd(lambda : "+ Learn Python")
     	tm.cmd(lambda : "x 1")
     	self.assertEqual(tm.tasks[1].status, "done")
+
+    def test_toDo(self):
+    	tm = TaskManager()
+    	tm.cmd(lambda : "+ Learn Python")
+    	tm.cmd(lambda : "x 1")
+    	tm.cmd(lambda : "o 1")
+    	self.assertEqual(tm.tasks[1].status, "to do")
+
 
 
 if __name__ == '__main__':

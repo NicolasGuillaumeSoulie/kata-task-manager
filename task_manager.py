@@ -2,7 +2,7 @@ import unittest
 
 def add(tasks, desc):
 	lastId = 1 if len(tasks)<1 else max(tasks.keys())
-	tasks[lastId] = Task(desc)
+	tasks[lastId] = Task(lastId, desc)
 
 def remove(tasks, id):
 	print(int(id))
@@ -26,9 +26,14 @@ parser = {
 }
 
 class Task:
-	def __init__(self, desc):
+	def __init__(self, idNum, desc):
+		self.id = idNum
 		self.desc = desc
 		self.status = "to do"
+
+	def toString(self):
+		done = " " if self.status == "to do" else "x"
+		return "{0} [{1}] {2}".format(self.id, done ,self.desc)
 
 class TaskManager:
 	def __init__(self):
@@ -78,6 +83,18 @@ class TestTaskManager(unittest.TestCase):
     	tm.cmd(lambda : "x 1")
     	tm.cmd(lambda : "o 1")
     	self.assertEqual(tm.tasks[1].status, "to do")
+
+    def test_displayTaskToDo(self):
+    	tm = TaskManager()
+    	tm.cmd(lambda : "+ Learn Python")
+    	self.assertEqual(tm.tasks[1].toString(), "1 [ ] Learn Python")
+
+    def test_displayTaskDone(self):
+    	tm = TaskManager()
+    	tm.cmd(lambda : "+ Learn Python")
+    	tm.cmd(lambda : "x 1")
+    	self.assertEqual(tm.tasks[1].toString(), "1 [x] Learn Python")
+
 
 
 

@@ -1,6 +1,7 @@
 import unittest
 
-def add():
+def add(tasks, desc):
+	tasks.append(Task(desc))
 	return 
 
 def remove():
@@ -28,7 +29,20 @@ class cmd:
 	def __init__(self, string):
 		self.taskName = string[2::]
 		self.cmd = parser[string[0]]
-		
+
+class Task:
+	def __init__(self, desc):
+		self.desc = desc
+		self.status = "to do"
+
+class TaskManager:
+	def __init__(self, inCmd = input):
+		self.tasks = []
+		self.inCmd = inCmd
+
+	def cmd(self):
+		inCmd = self.inCmd()
+		parser[inCmd[0]](self.tasks, inCmd[2::])
 
 class TestTaskManager(unittest.TestCase):
 
@@ -46,6 +60,13 @@ class TestTaskManager(unittest.TestCase):
 
     def test_parsing_done(self):
         self.assertEqual(cmd('q').cmd, quit)
+
+    def test_addTask(self):
+    	def fakeInput():
+    		return "+ Learn Python"
+    	tm = TaskManager(fakeInput)
+    	tm.cmd()
+    	self.assertEqual(tm.tasks[0].desc, "Learn Python")
 
 if __name__ == '__main__':
     unittest.main()

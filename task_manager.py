@@ -1,7 +1,7 @@
 import unittest
 
 def add(tasks, desc):
-	lastId = 1 if len(tasks)<1 else max(tasks.keys())
+	lastId = 1 if len(tasks)<1 else max(tasks.keys()) + 1
 	tasks[lastId] = Task(lastId, desc)
 
 def remove(tasks, id):
@@ -42,6 +42,13 @@ class TaskManager:
 	def cmd(self, inValue = input):
 		inCmd = inValue()
 		parser[inCmd[0]](self.tasks, inCmd[2::])
+
+	def display(self):
+		cmdString = ""
+		for task in self.tasks.values():
+			cmdString += task.toString() + "\n"
+		print(cmdString)
+		return cmdString
 
 class TestTaskManager(unittest.TestCase):
 
@@ -95,7 +102,12 @@ class TestTaskManager(unittest.TestCase):
     	tm.cmd(lambda : "x 1")
     	self.assertEqual(tm.tasks[1].toString(), "1 [x] Learn Python")
 
-
+    def test_displayAllTasks(self):
+    	tm = TaskManager()
+    	tm.cmd(lambda : "+ Learn Python")
+    	tm.cmd(lambda : "+ Learn TDD")
+    	tm.cmd(lambda : "+ Learn SQL")
+    	self.assertEqual(tm.display(), "1 [ ] Learn Python\n2 [ ] Learn TDD\n3 [ ] Learn SQL\n")
 
 
 if __name__ == '__main__':

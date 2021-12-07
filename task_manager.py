@@ -1,14 +1,15 @@
 import unittest
 
 def add(tasks, desc):
-	Task.lastId += 1
-	tasks[Task.lastId] = Task(desc)
+	lastId = 1 if len(tasks)<1 else max(tasks.keys())
+	tasks[lastId] = Task(desc)
 
 def remove(tasks, id):
+	print(int(id))
 	del tasks[int(id)]
 
-def done():
-	return
+def done(tasks, id):
+	tasks[int(id)].status = "done"
 
 def toDo():
 	return
@@ -25,7 +26,6 @@ parser = {
 }
 
 class Task:
-	lastId = 0
 	def __init__(self, desc):
 		self.desc = desc
 		self.status = "to do"
@@ -58,13 +58,19 @@ class TestTaskManager(unittest.TestCase):
     def test_addTask(self):
     	tm = TaskManager()
     	tm.cmd(lambda : "+ Learn Python")
-    	self.assertEqual(tm.tasks[0].desc, "Learn Python")
+    	self.assertEqual(tm.tasks[1].desc, "Learn Python")
 
     def test_removeTask(self):
     	tm = TaskManager()
     	tm.cmd(lambda : "+ Learn Python")
     	tm.cmd(lambda : "- 1")
     	self.assertEqual(len(tm.tasks), 0)
+
+    def test_done(self):
+    	tm = TaskManager()
+    	tm.cmd(lambda : "+ Learn Python")
+    	tm.cmd(lambda : "x 1")
+    	self.assertEqual(tm.tasks[1].status, "done")
 
 
 if __name__ == '__main__':

@@ -12,11 +12,15 @@ def done():
 def toDo():
 	return
 
+def quit():
+	return
+
 parser = {
 	"+" : add,
 	"-" : remove,
 	"x" : done,
-	"o" : toDo
+	"o" : toDo,
+	"q" : quit
 }
 
 class cmd:
@@ -39,6 +43,9 @@ class TestTaskManager(unittest.TestCase):
 
     def test_parsing_done(self):
         self.assertEqual(cmd('o 1').cmd, toDo)
+
+    def test_parsing_done(self):
+        self.assertEqual(cmd('q').cmd, quit)
 
 if __name__ == '__main__':
     unittest.main()

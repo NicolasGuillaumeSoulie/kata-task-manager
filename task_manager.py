@@ -1,11 +1,11 @@
 import unittest
 
 def add(tasks, desc):
-	tasks.append(Task(desc))
-	return 
+	Task.lastId += 1
+	tasks[Task.lastId] = Task(desc)
 
-def remove():
-	return
+def remove(tasks, id):
+	del tasks[int(id)]
 
 def done():
 	return
@@ -24,49 +24,48 @@ parser = {
 	"q" : quit
 }
 
-class cmd:
-
-	def __init__(self, string):
-		self.taskName = string[2::]
-		self.cmd = parser[string[0]]
-
 class Task:
+	lastId = 0
 	def __init__(self, desc):
 		self.desc = desc
 		self.status = "to do"
 
 class TaskManager:
-	def __init__(self, inCmd = input):
-		self.tasks = []
-		self.inCmd = inCmd
+	def __init__(self):
+		self.tasks = {}
 
-	def cmd(self):
-		inCmd = self.inCmd()
+	def cmd(self, inValue = input):
+		inCmd = inValue()
 		parser[inCmd[0]](self.tasks, inCmd[2::])
 
 class TestTaskManager(unittest.TestCase):
 
     def test_parsing_add(self):
-        self.assertEqual(cmd('+ Learn Python').cmd, add)
+        self.assertEqual(parser['+'], add)
 
     def test_parsing_remove(self):
-        self.assertEqual(cmd('- 1').cmd, remove)
+        self.assertEqual(parser['-'], remove)
 
     def test_parsing_done(self):
-        self.assertEqual(cmd('x 1').cmd, done)
+        self.assertEqual(parser['x'], done)
 
-    def test_parsing_done(self):
-        self.assertEqual(cmd('o 1').cmd, toDo)
+    def test_parsing_toDo(self):
+        self.assertEqual(parser['o'], toDo)
 
-    def test_parsing_done(self):
-        self.assertEqual(cmd('q').cmd, quit)
+    def test_parsing_Quit(self):
+        self.assertEqual(parser['q'], quit)
 
     def test_addTask(self):
-    	def fakeInput():
-    		return "+ Learn Python"
-    	tm = TaskManager(fakeInput)
-    	tm.cmd()
+    	tm = TaskManager()
+    	tm.cmd(lambda : "+ Learn Python")
     	self.assertEqual(tm.tasks[0].desc, "Learn Python")
+
+    def test_removeTask(self):
+    	tm = TaskManager()
+    	tm.cmd(lambda : "+ Learn Python")
+    	tm.cmd(lambda : "- 1")
+    	self.assertEqual(len(tm.tasks), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
